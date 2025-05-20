@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 # import secrets
 import os
-app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'fallback_dev_key')  
+app.secret_key = os.environ.get('210f8bb0cb632dc8e3fe08a1207f7873', 'fallback_dev_key')  
 
  # Generate a random secret key for development
 #app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'dev-key')
