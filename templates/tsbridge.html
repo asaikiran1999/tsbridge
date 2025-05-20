@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TS BRIDGE Student Registration Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <div class="branding">
+      <img src="{{ url_for('static', filename='ts logo.jpg') }}" alt="Company Logo">
+      <div class="slogan">Bridging gaps & building dreams</div>
+      <div class="socials">
+        <a href="https://www.instagram.com/ts_bridge/" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.facebook.com/tsbridge2024" title="Facebook"><i class="fab fa-facebook"></i></a>
+        <a href="https://www.linkedin.com/company/ts-bridge-edu/" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+      </div>
+        <a href="{{ url_for('static', filename='TS BRIDGE  Training Brochure.pdf') }}" download class="download-btn">
+    Download Brochure
+  </a>
+    </div>
+    <div class="form-section">
+      <!-- FLASH MESSAGES -->
+      <!-- {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <ul class="flashes">
+            {% for category, message in messages %}
+              <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %} -->
+      <form method="POST" action="">
+        <div>
+          <label for="fullname">Full Name</label>
+          <input type="text" id="fullname" name="fullname" required>
+        </div>
+        <div>
+          <label for="domain">Interested Domain</label>
+          <input type="text" id="domain" name="domain" required>
+        </div>
+        <div>
+          <label for="college">College Name</label>
+          <input type="text" id="college" name="college" required>
+        </div>
+        <div>
+          <label for="passout">Passout Year</label>
+          <select id="passout" name="passout" required>
+            <option value="">Select Year</option>
+            <option>2025</option>
+            <option>2024</option>
+            <option>2023</option>
+            <option>2022</option>
+            <option>2021</option>
+            <option>2020</option>
+          </select>
+        </div>
+        <div>
+          <label for="contact">Contact Number</label>
+          <input type="tel" id="contact" name="contact" pattern="[0-9]{10}" required>
+        </div>
+        <div>
+          <label for="email">Email ID</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div>
+          <label>Choose an Option</label>
+          <div class="choices">
+            <label><input type="radio" name="option" value="Option 1" required>Training + Internship + Job Guarantee</label>
+            <label><input type="radio" name="option" value="Option 2">Training + Internship + Job Support</label>
+            <label><input type="radio" name="option" value="Option 3">Job Support for Skilled Professionals</label>
+            <label><input type="radio" name="option" value="Option 4">OTHERS</label>
+          </div>
+        </div>
+        <div>
+          <label for="queries">Any Queries?</label>
+          <textarea id="queries" name="queries" rows="3" placeholder="Type your question here..."></textarea>
+        </div>
+        <button type="submit" class="submit-btn">Submit</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
