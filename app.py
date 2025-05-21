@@ -15,12 +15,18 @@ app.secret_key = '210f8bb0cb632dc8e3fe08a1207f7873'
 SERVICE_ACCOUNT_FILE = 'service_account.json'  # Correct path
 SPREADSHEET_ID = '1a4HlzykDhstUvZtR4LPtWEBl-4No2yCAZ_2G1XYWQAU'  # From your sheet URL
 RANGE_NAME = 'Sheet1!A1'  # Adjust as needed
-
 # Load credentials
-credentials = service_account.Credentials.from_service_account_file(
-    SERVICE_ACCOUNT_FILE,
+service_account_info = json.loads(os.environ['GOOGLE_SERVICE_ACCOUNT_JSON'])
+credentials = service_account.Credentials.from_service_account_info(
+    service_account_info,
     scopes=['https://www.googleapis.com/auth/spreadsheets']
 )
+
+
+# credentials = service_account.Credentials.from_service_account_file(
+#     SERVICE_ACCOUNT_FILE,
+#     scopes=['https://www.googleapis.com/auth/spreadsheets']
+# )
 service = build('sheets', 'v4', credentials=credentials)
 sheet = service.spreadsheets()
 
