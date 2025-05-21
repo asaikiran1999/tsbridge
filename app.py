@@ -1,9 +1,4 @@
 from flask import Flask, render_template, request, redirect,flash
-
-@app.route('/download-brochure')
-def download_brochure():
-    return send_from_directory('static', 'brochure.pdf', as_attachment=True)
-
 from google.oauth2 import service_account # type: ignore
 from googleapiclient.discovery import build # type: ignore
 
