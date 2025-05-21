@@ -18,7 +18,7 @@ RANGE_NAME = 'Sheet1!A1'  # Adjust as needed
 # Load credentials
 import os
 import json
-from google.oauth2 import service_account
+
 
 # Load credentials from environment variable
 service_account_info = json.loads(os.environ['GOOGLE_SERVICE_ACCOUNT_JSON'])
