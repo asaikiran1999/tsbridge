@@ -12,7 +12,7 @@ app.secret_key = '210f8bb0cb632dc8e3fe08a1207f7873'
 #app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'dev-key')
 
 # Replace these values
-SERVICE_ACCOUNT_FILE = 'service_account.json'  # Correct path
+# SERVICE_ACCOUNT_FILE = 'service_account.json'  # Correct path
 SPREADSHEET_ID = '1a4HlzykDhstUvZtR4LPtWEBl-4No2yCAZ_2G1XYWQAU'  # From your sheet URL
 RANGE_NAME = 'Sheet1!A1'  # Adjust as needed
 # Load credentials
