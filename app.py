@@ -21,7 +21,7 @@ service = build('sheets', 'v4', credentials=credentials)
 sheet = service.spreadsheets()
 
 # Global submit count (resets if server restarts)
-submit_count = 125
+#
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -46,7 +46,8 @@ def index():
                 valueInputOption='USER_ENTERED',
                 body=body
             ).execute()
-            flash(f'Data saved to Google Sheet! (Total submits: {submit_count})', 'success')
+            #flash(f'Data saved to Google Sheet! (Total submits: {submit_count})', 'success')
+            submit_count=sheet.length()
         except Exception as e:
             flash(f'Error: {str(e)}', 'danger')
         return redirect('/')
