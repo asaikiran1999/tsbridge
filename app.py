@@ -9,7 +9,7 @@ app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'dev-key')
 
 # Google Sheets setup
 SPREADSHEET_ID = '1a4HlzykDhstUvZtR4LPtWEBl-4No2yCAZ_2G1XYWQAU'
-RANGE_NAME = 'Sheet1!A1'
+RANGE_NAME = 'Sheet1!A1:H'  # Adjust columns as needed
 
 # Load credentials from environment variable
 service_account_info = json.loads(os.environ['GOOGLE_SERVICE_ACCOUNT_JSON'])
@@ -20,14 +20,19 @@ credentials = service_account.Credentials.from_service_account_info(
 service = build('sheets', 'v4', credentials=credentials)
 sheet = service.spreadsheets()
 
-# Global submit count (resets if server restarts)
-#
+def get_submit_count():
+    """Returns the number of rows (submissions) in the sheet (excluding header)."""
+    result = sheet.values().get(
+        spreadsheetId=SPREADSHEET_ID,
+        range=RANGE_NAME
+    ).execute()
+    values = result.get('values', [])
+    # If you have a header row, subtract 1
+    return max(len(values) - 1, 0) if values else 0
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    submit_count=0
     if request.method == 'POST':
-        submit_count += 1
         try:
             values = [[
                 request.form.get('fullname'),
@@ -46,11 +51,11 @@ def index():
                 valueInputOption='USER_ENTERED',
                 body=body
             ).execute()
-            #flash(f'Data saved to Google Sheet! (Total submits: {submit_count})', 'success')
-            submit_count=sheet.length()
+            flash('Data saved to Google Sheet!', 'success')
         except Exception as e:
             flash(f'Error: {str(e)}', 'danger')
         return redirect('/')
+    submit_count = get_submit_count()
     return render_template('tsbridge.html', submit_count=submit_count)
 
 if __name__ == '__main__':
