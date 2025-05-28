@@ -21,7 +21,7 @@ service = build('sheets', 'v4', credentials=credentials)
 sheet = service.spreadsheets()
 
 # Global submit count (resets if server restarts)
-submit_count = 0
+submit_count = 125
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
