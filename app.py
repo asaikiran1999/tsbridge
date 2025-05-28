@@ -25,7 +25,7 @@ sheet = service.spreadsheets()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    
+    submit_count=0
     if request.method == 'POST':
         submit_count += 1
         try:
