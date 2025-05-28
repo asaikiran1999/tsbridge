@@ -1,15 +1,15 @@
 from flask import Flask, render_template, request, redirect, flash
-from google.oauth2 import service_account  # type: ignore
-from googleapiclient.discovery import build  # type: ignore
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
 import os
 import json
+import threading
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'dev-key')
 
-# Google Sheets setup
 SPREADSHEET_ID = '1a4HlzykDhstUvZtR4LPtWEBl-4No2yCAZ_2G1XYWQAU'
-RANGE_NAME = 'Sheet1!A1:H'  # Adjust columns as needed
+RANGE_NAME = 'Sheet1!A1:H'
 
 # Load credentials from environment variable
 service_account_info = json.loads(os.environ['GOOGLE_SERVICE_ACCOUNT_JSON'])
@@ -20,18 +20,25 @@ credentials = service_account.Credentials.from_service_account_info(
 service = build('sheets', 'v4', credentials=credentials)
 sheet = service.spreadsheets()
 
-def get_submit_count():
-    """Returns the number of rows (submissions) in the sheet (excluding header)."""
+# Thread-safe counter
+submit_count_lock = threading.Lock()
+submit_count = None
+
+def initialize_submit_count():
+    global submit_count
     result = sheet.values().get(
         spreadsheetId=SPREADSHEET_ID,
         range=RANGE_NAME
     ).execute()
-    values = result.get('values', [])
-    # If you have a header row, subtract 1
-    return max(len(values) - 1, 0) if values else 0
+    values = result.get('', [])
+    submit_count = max(len(values) - 1, 0) if values else 0
+
+# Initialize the count at startup
+initialize_submit_count()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    global submit_count
     if request.method == 'POST':
         try:
             values = [[
@@ -45,18 +52,24 @@ def index():
                 request.form.get('queries')
             ]]
             body = {'values': values}
-            sheet.values().append(
+            response = sheet.values().append(
                 spreadsheetId=SPREADSHEET_ID,
                 range=RANGE_NAME,
                 valueInputOption='USER_ENTERED',
                 body=body
             ).execute()
+            # Optimistically increment the counter
+            with submit_count_lock:
+                submit_count += 1
             flash('Data saved to Google Sheet!', 'success')
         except Exception as e:
             flash(f'Error: {str(e)}', 'danger')
         return redirect('/')
-    submit_count = get_submit_count()
-    return render_template('tsbridge.html', submit_count=submit_count)
+    # No API call here; just use the cached count
+    with submit_count_lock:
+        count = submit_count
+    return render_template('tsbridge.html', submit_count=count)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug)
+
